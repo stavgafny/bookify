@@ -1,6 +1,6 @@
+import 'package:bookify/src/services/bookings_api_handler.dart';
 import 'package:flutter/material.dart';
 import '../../models/booking_model.dart';
-import '../../services/bookings_api_handler.dart';
 import '../../features/booking_card/booking_card.dart';
 
 class BookingCardsListView extends StatelessWidget {

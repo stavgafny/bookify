@@ -1,8 +1,8 @@
-import 'dart:convert';
+import 'dart:developer' as developer;
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/booking_model.dart';
+import '../utils/bookings_converter.dart';
 
 class BookingsApiHandler {
   static final _url = Uri.http(
@@ -11,29 +11,23 @@ class BookingsApiHandler {
     'api/hotel-listeners',
   );
   static const _headers = {"Content-Type": "application/json"};
-
-  static List<BookingModel> _parseBookingsResponse(List<dynamic> bookingsData) {
-    final List<BookingModel> bookings = [];
-    for (var bookingMap in bookingsData) {
-      try {
-        bookings.add(BookingModel.fromMap(bookingMap));
-      } catch (e) {
-        if (kDebugMode) {
-          print("Faild to construct BookingModel $e on $bookingMap");
-        }
-      }
-    }
-    return bookings;
-  }
+  static const _timeLimit = Duration(seconds: 5);
 
   static Future<List<BookingModel>?> fetchBookings() async {
+    String log = "";
     try {
-      final response = await http.read(_url, headers: _headers);
-      final List<dynamic> bookingsData = json.decode(response);
-      final bookings = _parseBookingsResponse(bookingsData);
+      final response =
+          await http.read(_url, headers: _headers).timeout(_timeLimit);
+
+      final bookings = BookingsConverter.tryParse(response);
+
+      log = "Fetched ${bookings.length} bookings";
       return bookings;
     } catch (e) {
+      log = "Failed to fetch $e";
       return null;
+    } finally {
+      developer.log(log, name: "BookingsApiHandler.fetchBookings");
     }
   }
 }
