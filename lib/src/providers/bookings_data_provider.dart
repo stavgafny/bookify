@@ -3,14 +3,14 @@ import '../services/bookings_api_handler.dart';
 import '../services/bookings_storage.dart';
 
 class BookingsDataProvider {
-  static final _fetchBookingsData = BookingsData.generateFromRetrieval(
+  static final _fetchBookingsData = BookingsData.generateFromRetrievalMethod(
     method: BookingsApiHandler.fetchBookings,
-    successStatus: BookingsDataRetrievalStatus.fetch,
+    status: BookingsDataRetrievalStatus.fetch,
   );
 
-  static final _readBookingsData = BookingsData.generateFromRetrieval(
+  static final _readBookingsData = BookingsData.generateFromRetrievalMethod(
     method: BookingsStorage.read,
-    successStatus: BookingsDataRetrievalStatus.read,
+    status: BookingsDataRetrievalStatus.read,
   );
 
   static Future<BookingsData> _retrieveBookingsData({
@@ -21,7 +21,7 @@ class BookingsDataProvider {
     if (mainBookingsData.succeeded) {
       return mainBookingsData;
     }
-    return await fallbackMethod();
+    return (await fallbackMethod()).asFallback();
   }
 
   static Future<BookingsData> getBookingsData(
@@ -40,7 +40,6 @@ class BookingsDataProvider {
       print("fetched ${bookingsData.bookings?.length.toString()} bookings");
       BookingsStorage.store(bookingsData.bookings ?? []);
     }
-    print(bookingsData.status);
     return bookingsData;
   }
 }

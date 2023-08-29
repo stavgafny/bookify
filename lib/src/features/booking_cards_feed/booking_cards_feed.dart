@@ -4,6 +4,7 @@ import '../../providers/bookings_data_provider.dart';
 import './widgets/bookings_loading_animation.dart';
 import './widgets/bookings_error_message.dart';
 import './widgets/booking_cards_list_view.dart';
+import './widgets/text_snackbar.dart';
 
 class BookingCardsFeed extends StatefulWidget {
   const BookingCardsFeed({super.key});
@@ -33,6 +34,12 @@ class _BookingCardsFeedState extends State<BookingCardsFeed> {
     });
   }
 
+  bool fallbackFromFetch(BookingsData bookingsData) {
+    return bookingsData.succeeded &&
+        bookingsData.status == BookingsDataRetrievalStatus.read &&
+        bookingsData.usedFallback;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
@@ -49,6 +56,10 @@ class _BookingCardsFeedState extends State<BookingCardsFeed> {
               return BookingsErrorMessage.internalError(snapshot.error);
             }
             final bookingsData = snapshot.data!;
+            if (fallbackFromFetch(bookingsData)) {
+              TextSnackBar.faildToFetch(context);
+            }
+
             if (bookingsData.failed) {
               return BookingsErrorMessage.noBookings;
             }
@@ -56,7 +67,7 @@ class _BookingCardsFeedState extends State<BookingCardsFeed> {
             if (bookings.isEmpty) {
               return BookingsErrorMessage.emptyBookings;
             }
-            return BookingCardsListView(bookings: bookingsData.bookings!);
+            return BookingCardsListView(bookings: bookings);
           },
         ),
       ),
