@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:http/http.dart' as http;
 import '../models/booking_model.dart';
 import '../utils/bookings_converter.dart';
@@ -14,20 +12,12 @@ class BookingsApiHandler {
   static const _timeLimit = Duration(seconds: 5);
 
   static Future<List<BookingModel>?> fetchBookings() async {
-    String log = "";
     try {
       final response =
           await http.read(_url, headers: _headers).timeout(_timeLimit);
-
-      final bookings = BookingsConverter.tryParse(response);
-
-      log = "Fetched ${bookings.length} bookings";
-      return bookings;
+      return BookingsConverter.tryParse(response);
     } catch (e) {
-      log = "Failed to fetch $e";
       return null;
-    } finally {
-      developer.log(log, name: "BookingsApiHandler.fetchBookings");
     }
   }
 }

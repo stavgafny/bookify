@@ -1,4 +1,6 @@
+import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
+import '../utils/booking_list_helper.dart';
 import '../services/bookings_api_handler.dart';
 import '../services/bookings_storage.dart';
 
@@ -37,9 +39,39 @@ class BookingsDataProvider {
           );
 
     if (bookingsData.status == BookingsDataRetrievalStatus.fetch) {
-      print("fetched ${bookingsData.bookings?.length.toString()} bookings");
       BookingsStorage.store(bookingsData.bookings ?? []);
     }
     return bookingsData;
+  }
+
+  static void updateBookingsData({
+    required void Function() onChangedBookings,
+    required void Function(List<BookingModel> bookings) onPriceAlerts,
+  }) async {
+    final fetchBookingsData = await _fetchBookingsData();
+    if (fetchBookingsData.failed) return;
+
+    final readBookingsData = await _readBookingsData();
+
+    final prevBookings = readBookingsData.bookings ?? [];
+    final newBookings = fetchBookingsData.bookings ?? [];
+
+    final changedBookings = BookingListHelper.getChangedBookings(
+      prevBookings: prevBookings,
+      newBookings: newBookings,
+    );
+
+    if (changedBookings.isNotEmpty) {
+      await BookingsStorage.store(newBookings);
+      onChangedBookings();
+
+      final priceAlerts = BookingListHelper.getPriceAlerts(
+        prevBookings: prevBookings,
+        newBookings: changedBookings,
+      );
+      if (priceAlerts.isNotEmpty) {
+        onPriceAlerts(priceAlerts);
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/bookings_data.dart';
 import '../../providers/bookings_data_provider.dart';
+import '../../services/bookings_background_worker.dart';
 import './widgets/bookings_loading_animation.dart';
 import './widgets/bookings_error_message.dart';
 import './widgets/booking_cards_list_view.dart';
@@ -13,13 +14,29 @@ class BookingCardsFeed extends StatefulWidget {
   State<BookingCardsFeed> createState() => _BookingCardsFeedState();
 }
 
-class _BookingCardsFeedState extends State<BookingCardsFeed> {
+class _BookingCardsFeedState extends State<BookingCardsFeed>
+    with WidgetsBindingObserver {
   Future<BookingsData>? _bookingsData;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadBookings();
+    BookingsBackgroundWorker.onUpdate(_loadBookings);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBookings();
+    }
   }
 
   Future<void> _loadBookings() async {
