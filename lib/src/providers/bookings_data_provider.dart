@@ -1,10 +1,13 @@
 import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
 import '../utils/booking_list_helper.dart';
+import '../utils/logger.dart';
 import '../services/bookings_api_handler.dart';
 import '../services/bookings_storage.dart';
 
 class BookingsDataProvider {
+  static final _logger = Logger.debugInstance?.of<BookingsDataProviderLogger>();
+
   static final _fetchBookingsData = BookingsData.generateFromRetrievalMethod(
     method: BookingsApiHandler.fetchBookings,
     status: BookingsDataRetrievalStatus.fetch,
@@ -37,6 +40,11 @@ class BookingsDataProvider {
             mainMethod: _readBookingsData,
             fallbackMethod: _fetchBookingsData,
           );
+
+    _logger?.logProvidedBookingsData(
+      bookingsData: bookingsData,
+      preferFetch: preferFetch,
+    );
 
     if (bookingsData.status == BookingsDataRetrievalStatus.fetch) {
       BookingsStorage.store(bookingsData.bookings ?? []);

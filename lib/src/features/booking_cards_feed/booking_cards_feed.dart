@@ -51,9 +51,10 @@ class _BookingCardsFeedState extends State<BookingCardsFeed>
     });
   }
 
-  bool fallbackFromFetch(BookingsData bookingsData) {
+  bool fallbackFromRefreshFetch(BookingsData bookingsData) {
+    // used `READ` but expected `FETCH`
     return bookingsData.succeeded &&
-        bookingsData.status == BookingsDataRetrievalStatus.read &&
+        bookingsData.status != BookingsDataRetrievalStatus.fetch &&
         bookingsData.usedFallback;
   }
 
@@ -73,7 +74,7 @@ class _BookingCardsFeedState extends State<BookingCardsFeed>
               return BookingsErrorMessage.internalError(snapshot.error);
             }
             final bookingsData = snapshot.data!;
-            if (fallbackFromFetch(bookingsData)) {
+            if (fallbackFromRefreshFetch(bookingsData)) {
               TextSnackBar.faildToFetch(context);
             }
 

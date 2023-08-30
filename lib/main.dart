@@ -6,6 +6,7 @@ import './src/services/bookings_background_worker.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await appConfig.init();
+
   runApp(const MainApp());
 
   await BookingsBackgroundWorker.instantiateWorker(

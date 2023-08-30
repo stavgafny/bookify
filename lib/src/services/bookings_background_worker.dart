@@ -3,8 +3,11 @@ import 'dart:ui';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import '../providers/bookings_data_provider.dart';
+import '../utils/logger.dart';
 
 class BookingsBackgroundWorker {
+  static final _logger = Logger.debugInstance?.of<BookingsBGWorkerLogger>();
+
   static const String _isolatePortName = 'bookings-background-worker[@isolate]';
   static const int _isolateId = 10;
 
@@ -18,18 +21,18 @@ class BookingsBackgroundWorker {
   }
 
   static void _sendToUI() {
-    print("SENDING UI CHANGES");
+    _logger?.log("sending UI changes");
     _sendPort ??= IsolateNameServer.lookupPortByName(_isolatePortName);
     _sendPort?.send(null);
   }
 
   @pragma('vm:entry-point')
   static Future<void> _worker() async {
-    print("CALLED WORKER");
+    _logger?.log("fired scheduled worker");
     BookingsDataProvider.updateBookingsData(
       onChangedBookings: _sendToUI,
       onPriceAlerts: (bookings) {
-        print("PRICE ALERTS ON ${bookings.length} bookings");
+        _logger?.log("price alert changes on ${bookings.length} bookings");
       },
     );
   }
@@ -52,5 +55,7 @@ class BookingsBackgroundWorker {
       allowWhileIdle: true,
       rescheduleOnReboot: true,
     );
+
+    _logger?.log("instantiated worker");
   }
 }
