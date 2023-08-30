@@ -13,7 +13,7 @@ class PriceNotifier extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "$priceNotifier\$",
+      "\$$priceNotifier",
       style: _baseStyle,
     );
   }

@@ -22,7 +22,7 @@ class LastPrice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      lastPrice != null ? "$lastPrice\$" : "\$",
+      lastPrice != null ? "\$$lastPrice" : "∞",
       style: _baseStyle.copyWith(
         color: _lessThen ? _saleColor : _nonSaleColor,
         decoration:
