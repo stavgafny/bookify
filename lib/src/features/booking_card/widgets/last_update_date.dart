@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class LastUpdateDate extends StatelessWidget {
+import 'package:flutter/material.dart';
+import '../../../providers/global_time.dart';
+
+class LastUpdateDate extends StatefulWidget {
   static const _style = TextStyle(
     fontSize: 12.0,
     fontWeight: FontWeight.w400,
@@ -8,15 +11,42 @@ class LastUpdateDate extends StatelessWidget {
   );
 
   final DateTime lastUpdateDate;
-
   const LastUpdateDate({required this.lastUpdateDate, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Text("~${_getCurrentTimeText()}", style: LastUpdateDate._style);
+  State<LastUpdateDate> createState() => _LastUpdateDateState();
+}
+
+class _LastUpdateDateState extends State<LastUpdateDate> {
+  String _timeText = "";
+  StreamSubscription<void>? _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTextIfNeeded();
+    _listener = GlobalTime.onEverySecond.listen((_) => _updateTextIfNeeded());
   }
 
-  Duration get _duration => DateTime.now().difference(lastUpdateDate);
+  @override
+  void dispose() {
+    _listener?.cancel();
+    super.dispose();
+  }
+
+  void _updateTextIfNeeded() {
+    final currentTimeText = _getCurrentTimeText();
+    if (_timeText != currentTimeText) {
+      setState(() => _timeText = currentTimeText);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("~$_timeText", style: LastUpdateDate._style);
+  }
+
+  Duration get _duration => DateTime.now().difference(widget.lastUpdateDate);
 
   String _getCurrentTimeText() {
     final duration = _duration;
