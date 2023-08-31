@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import '../providers/bookings_data_provider.dart';
 import '../utils/logger.dart';
+import './bookings_notifications_service.dart';
 
 class BookingsBackgroundWorker {
   static final _logger = Logger.debugInstance?.of<BookingsBGWorkerLogger>();
@@ -32,6 +33,12 @@ class BookingsBackgroundWorker {
     BookingsDataProvider.updateBookingsData(
       onChangedBookings: _sendToUI,
       onPriceAlerts: (bookings) {
+        for (final booking in bookings) {
+          BookingsNotificationsService.createNotification(
+            title: booking.name,
+            body: "Price is now \$${booking.lastPrice}",
+          );
+        }
         _logger?.log("price alert changes on ${bookings.length} bookings");
       },
     );
@@ -46,7 +53,7 @@ class BookingsBackgroundWorker {
     _receivePort.listen((_) => _update?.call());
 
     await AndroidAlarmManager.initialize();
-    await AndroidAlarmManager.oneShot(
+    await AndroidAlarmManager.periodic(
       duration,
       _isolateId,
       _worker,
