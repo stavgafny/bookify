@@ -1,5 +1,6 @@
 import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
+import '../services/bookings_lttc.dart';
 import '../utils/booking_list_helper.dart';
 import '../utils/logger.dart';
 import '../services/bookings_api_handler.dart';
@@ -55,6 +56,7 @@ class BookingsDataProvider {
   static void updateBookingsData({
     required void Function() onChangedBookings,
     required void Function(List<BookingModel> bookings) onPriceAlerts,
+    required void Function(List<BookingModel> bookings) lttcAlerts,
   }) async {
     final fetchBookingsData = await _fetchBookingsData();
     if (fetchBookingsData.failed) return;
@@ -81,5 +83,7 @@ class BookingsDataProvider {
         onPriceAlerts(priceAlerts);
       }
     }
+
+    BookingsLTTC.getAlertingLTTCBookings(newBookings).then(lttcAlerts);
   }
 }

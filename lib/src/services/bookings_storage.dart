@@ -9,18 +9,16 @@ class BookingsStorage {
   static const String _storeKey = '\$bookings-list-store-key';
   static SharedPreferences? _prefs;
 
-  static Future<void> _refresh() async => await _prefs?.reload();
-
-  static Future<void> ensureInit() async {
+  static Future<void> _ensureEstablishAndRefresh() async {
     _prefs ??= await SharedPreferences.getInstance();
-    await _refresh();
+    await _prefs?.reload();
   }
 
   static Future<List<BookingModel>?> read() async {
     List<BookingModel>? bookings;
     String errorMessage = "";
     try {
-      await ensureInit();
+      await _ensureEstablishAndRefresh();
       final bookingsJson = _prefs?.getString(_storeKey);
       if (bookingsJson == null) throw Exception("NO SAVED BOOKINGS FOUND");
       bookings = BookingsConverter.decode(bookingsJson);
@@ -33,7 +31,7 @@ class BookingsStorage {
   }
 
   static Future<bool> store(List<BookingModel> bookings) async {
-    await ensureInit();
+    await _ensureEstablishAndRefresh();
     final stored = await _prefs?.setString(
             _storeKey, BookingsConverter.encode(bookings)) ??
         false;

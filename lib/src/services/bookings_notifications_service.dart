@@ -40,6 +40,7 @@ class BookingsNotificationsService {
   static Future<bool> createNotification({
     required String title,
     required String body,
+    bool reminder = false,
   }) async {
     try {
       return await AwesomeNotifications().createNotification(
@@ -49,7 +50,10 @@ class BookingsNotificationsService {
           title: title,
           body: body,
           actionType: ActionType.Default,
-          displayOnForeground: false,
+          displayOnForeground: reminder ? true : false,
+          category: reminder
+              ? NotificationCategory.Reminder
+              : NotificationCategory.Service,
         ),
       );
     } catch (e) {
