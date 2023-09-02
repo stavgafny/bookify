@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LastPrice extends StatelessWidget {
-  static const _baseStyle = TextStyle(
+  static const _baseTextStyle = TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.w600,
   );
@@ -23,7 +23,7 @@ class LastPrice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       lastPrice != null ? "\$$lastPrice" : "∞",
-      style: _baseStyle.copyWith(
+      style: _baseTextStyle.copyWith(
         color: _lessThen ? _saleColor : _nonSaleColor,
         decoration:
             _lessThen ? TextDecoration.none : TextDecoration.lineThrough,

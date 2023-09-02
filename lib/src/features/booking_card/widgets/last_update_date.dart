@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../../providers/global_time.dart';
+import '../../../utils/date_formatter.dart';
 
 class LastUpdateDate extends StatefulWidget {
   static const _style = TextStyle(
@@ -35,7 +36,8 @@ class _LastUpdateDateState extends State<LastUpdateDate> {
   }
 
   void _updateTextIfNeeded() {
-    final currentTimeText = _getCurrentTimeText();
+    final currentTimeText = DateFormatter.formatDuration(_currentTime);
+
     if (_timeText != currentTimeText) {
       setState(() => _timeText = currentTimeText);
     }
@@ -46,13 +48,5 @@ class _LastUpdateDateState extends State<LastUpdateDate> {
     return Text("~$_timeText", style: LastUpdateDate._style);
   }
 
-  Duration get _duration => DateTime.now().difference(widget.lastUpdateDate);
-
-  String _getCurrentTimeText() {
-    final duration = _duration;
-    if (duration.inDays > 0) return "${duration.inDays}d";
-    if (duration.inHours > 0) return "${duration.inHours}h";
-    if (duration.inMinutes > 0) return "${duration.inMinutes}m";
-    return "${duration.inSeconds}s";
-  }
+  Duration get _currentTime => DateTime.now().difference(widget.lastUpdateDate);
 }

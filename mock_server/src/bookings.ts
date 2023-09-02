@@ -4,7 +4,7 @@ const bookings: readonly BookingModel[] = [
     {
         checkinDate: 1693008000000,
         checkoutDate: 1693180800000,
-        lastDateToCancel: 1692662400000,
+        lastDateToCancel: 1693755782851,
         id: 1,
         name: "Riu Plaza Fisherman's Wharf",
         startRoomPrice: 394.2,

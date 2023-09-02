@@ -1,10 +1,25 @@
 import 'package:bookify/src/models/booking_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class LTTCDuration {
+  final Duration duration;
+  final bool reachedAlertDuration;
+
+  const LTTCDuration(this.duration, this.reachedAlertDuration);
+}
+
 /// Bookings Last Time To Cancel
 class BookingsLTTC {
   /// The duration in which needs to be alerted
   static const _lttcAlertDuration = Duration(days: 2);
+
+  static LTTCDuration getLTTCDuration(DateTime lttc, DateTime time) {
+    final duration = lttc.difference(time);
+    return LTTCDuration(
+      duration,
+      duration < _lttcAlertDuration && !duration.isNegative,
+    );
+  }
 
   /// Returns given list of bookings in which their last date to cancel is less
   /// then [lttcAlertDuration] and it is the first time it is less
@@ -31,13 +46,12 @@ class BookingsLTTC {
     DateTime lttc,
     DateTime now,
     DateTime? timeStamp,
-  ) =>
-      _reachedAlertDuration(lttc, now) &&
-      (timeStamp == null || (!_reachedAlertDuration(lttc, timeStamp)));
+  ) {
+    final reachedNow = getLTTCDuration(lttc, now).reachedAlertDuration;
+    final notReachedTimeStamp = timeStamp == null ||
+        !getLTTCDuration(lttc, timeStamp).reachedAlertDuration;
 
-  static bool _reachedAlertDuration(DateTime lttc, DateTime time) {
-    final duration = lttc.difference(time);
-    return duration < _lttcAlertDuration && !duration.isNegative;
+    return reachedNow && notReachedTimeStamp;
   }
 }
 

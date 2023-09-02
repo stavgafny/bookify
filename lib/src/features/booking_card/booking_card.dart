@@ -6,9 +6,11 @@ import './widgets/price_notifier.dart';
 import './widgets/last_price.dart';
 import './widgets/notification_button.dart';
 import './widgets/last_update_date.dart';
+import './widgets/last_date_to_cancel_text.dart';
 
 class BookingCard extends StatelessWidget {
   static const _cardBgColor = Color(0xFF312E39);
+  static const _cardHeight = 100.0;
 
   final BookingModel booking;
   final bool subscribed;
@@ -25,7 +27,7 @@ class BookingCard extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: Container(
         width: double.infinity,
-        height: 100.0,
+        height: _cardHeight,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: _cardBgColor,
@@ -66,13 +68,14 @@ class BookingCard extends StatelessWidget {
           checkinDate: booking.checkinDate,
           checkoutDate: booking.checkoutDate,
         ),
+        LastDateToCancelText(lttcDate: booking.lastDateToCancel),
       ],
     );
   }
 
   Widget _prices() {
     return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
+      padding: const EdgeInsets.only(right: 4.0),
       child: Align(
         alignment: Alignment.centerRight,
         child: Column(

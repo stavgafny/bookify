@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import '../models/booking_model.dart';
 import '../providers/bookings_data_provider.dart';
+import '../utils/date_formatter.dart';
 import '../utils/logger.dart';
 import './bookings_notifications_service.dart';
 
@@ -40,11 +41,11 @@ class BookingsBackgroundWorker {
 
   static void _notifiLTTCBookings(List<BookingModel> bookings) {
     for (final booking in bookings) {
-      final lttcTime = booking.lastDateToCancel.difference(DateTime.now());
-      final lttcTimeInDays = (lttcTime.inHours / Duration.hoursPerDay).round();
+      final timeLeft = booking.lastDateToCancel.difference(DateTime.now());
+      final timeLeftText = DateFormatter.formatDuration(timeLeft);
       BookingsNotificationsService.createNotification(
         title: booking.name,
-        body: "Last cancellation date is near! ($lttcTimeInDays days left)",
+        body: "Last cancellation date is near! ($timeLeftText)",
         reminder: true,
       );
     }
