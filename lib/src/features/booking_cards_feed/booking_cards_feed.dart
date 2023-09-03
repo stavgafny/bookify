@@ -85,7 +85,10 @@ class _BookingCardsFeedState extends State<BookingCardsFeed>
             if (bookings.isEmpty) {
               return BookingsErrorMessage.emptyBookings;
             }
-            return BookingCardsListView(bookings: bookings);
+            return BookingCardsListView(
+              bookings: bookings,
+              unsubscriptions: bookingsData.unsubscriptions,
+            );
           },
         ),
       ),

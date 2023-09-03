@@ -4,7 +4,7 @@ import './widgets/name_title.dart';
 import './widgets/dates_text.dart';
 import './widgets/price_notifier.dart';
 import './widgets/last_price.dart';
-import './widgets/notification_button.dart';
+import './widgets/subscription_button.dart';
 import './widgets/last_update_date.dart';
 import './widgets/last_date_to_cancel_text.dart';
 
@@ -94,16 +94,13 @@ class BookingCard extends StatelessWidget {
   }
 
   Widget _notificationAndLastUpdate() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          NotificationButton(subscribed: subscribed),
-          LastUpdateDate(lastUpdateDate: booking.lastUpdateDate),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SubscriptionButton(id: booking.id, initialSubscription: subscribed),
+        LastUpdateDate(lastUpdateDate: booking.lastUpdateDate),
+      ],
     );
   }
 }

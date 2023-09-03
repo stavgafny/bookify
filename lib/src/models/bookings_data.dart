@@ -1,4 +1,5 @@
 import './booking_model.dart';
+import './bookings_unsubscriptions.dart';
 
 enum BookingsDataRetrievalStatus { fetch, read, fail }
 
@@ -19,11 +20,13 @@ class BookingsData {
   final List<BookingModel>? bookings;
   final BookingsDataRetrievalStatus status;
   final bool usedFallback;
+  final BookingsUnsubscriptions unsubscriptions;
 
   const BookingsData({
     required this.bookings,
     required this.status,
     this.usedFallback = false,
+    this.unsubscriptions = BookingsUnsubscriptions.empty,
   });
 
   bool get failed => status == BookingsDataRetrievalStatus.fail;
@@ -31,5 +34,19 @@ class BookingsData {
 
   BookingsData asFallback() {
     return BookingsData(bookings: bookings, status: status, usedFallback: true);
+  }
+
+  BookingsData copyWith({
+    List<BookingModel>? bookings,
+    BookingsDataRetrievalStatus? status,
+    bool? usedFallback,
+    BookingsUnsubscriptions? unsubscriptions,
+  }) {
+    return BookingsData(
+      bookings: bookings ?? this.bookings,
+      status: status ?? this.status,
+      usedFallback: usedFallback ?? this.usedFallback,
+      unsubscriptions: unsubscriptions ?? this.unsubscriptions,
+    );
   }
 }

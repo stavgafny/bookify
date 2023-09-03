@@ -1,6 +1,7 @@
 import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
 import '../services/bookings_last_cancellation_date.dart';
+import '../services/bookings_local_unsubscriptions.dart';
 import '../utils/booking_list_helper.dart';
 import '../utils/logger.dart';
 import '../services/bookings_api_handler.dart';
@@ -50,7 +51,10 @@ class BookingsDataProvider {
     if (bookingsData.status == BookingsDataRetrievalStatus.fetch) {
       BookingsStorage.store(bookingsData.bookings ?? []);
     }
-    return bookingsData;
+
+    final unsubscriptions =
+        await BookingsLocalUnsubscriptions.readUnsubscriptions();
+    return bookingsData.copyWith(unsubscriptions: unsubscriptions);
   }
 
   static void updateBookingsData({
