@@ -87,7 +87,7 @@ class _BookingCardsFeedState extends State<BookingCardsFeed>
             }
             return BookingCardsListView(
               bookings: bookings,
-              unsubscriptions: bookingsData.unsubscriptions,
+              unsubscriptions: bookingsData.unsubscriptions!,
             );
           },
         ),

@@ -1,11 +1,10 @@
 class BookingsUnsubscriptions {
-  static const empty = BookingsUnsubscriptions({});
-
   final Set<String> _ids;
 
   const BookingsUnsubscriptions(this._ids);
+  BookingsUnsubscriptions.empty() : _ids = {};
 
-  bool getStateOfId(int id) {
+  bool getIsIdSubscribed(int id) {
     return !_ids.contains(id.toString());
   }
 

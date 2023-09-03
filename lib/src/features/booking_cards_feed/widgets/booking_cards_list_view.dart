@@ -20,7 +20,7 @@ class BookingCardsListView extends StatelessWidget {
         final booking = bookings[index];
         return BookingCard(
           booking: booking,
-          subscribed: unsubscriptions.getStateOfId(booking.id),
+          subscribed: unsubscriptions.getIsIdSubscribed(booking.id),
         );
       },
     );

@@ -2,7 +2,7 @@ import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
 import '../services/bookings_last_cancellation_date.dart';
 import '../services/bookings_local_unsubscriptions.dart';
-import '../utils/booking_list_helper.dart';
+import '../utils/bookings_list_helper.dart';
 import '../utils/logger.dart';
 import '../services/bookings_api_handler.dart';
 import '../services/bookings_storage.dart';
@@ -71,24 +71,29 @@ class BookingsDataProvider {
     final prevBookings = readBookingsData.bookings ?? [];
     final newBookings = fetchBookingsData.bookings ?? [];
 
-    final changedBookings = BookingListHelper.getChangedBookings(
+    final changedBookings = BookingsListHelper.getChangedBookings(
       prevBookings: prevBookings,
       newBookings: newBookings,
     );
+
+    final validNewBookings = BookingsListHelper.getValidBookings(newBookings);
+    final validSubscribedOnlyNewBookings =
+        await BookingsListHelper.getSubscribedOnlyBookings(validNewBookings);
 
     if (changedBookings.isNotEmpty) {
       await BookingsStorage.store(newBookings);
       onBookingsChanges();
 
-      final priceAlerts = BookingListHelper.getPriceAlerts(
+      final priceAlerts = BookingsListHelper.getPriceAlerts(
         prevBookings: prevBookings,
-        newBookings: changedBookings,
+        newBookings: validSubscribedOnlyNewBookings,
       );
       if (priceAlerts.isNotEmpty) {
         priceAlertingBookings(priceAlerts);
       }
     }
-    BookingsLastCancellationDate.getRemindingBookings(newBookings)
+    BookingsLastCancellationDate.getRemindingBookings(
+            validSubscribedOnlyNewBookings)
         .then(cancellationDateRemindingBookings);
   }
 }

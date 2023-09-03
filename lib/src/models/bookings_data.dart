@@ -20,13 +20,13 @@ class BookingsData {
   final List<BookingModel>? bookings;
   final BookingsDataRetrievalStatus status;
   final bool usedFallback;
-  final BookingsUnsubscriptions unsubscriptions;
+  final BookingsUnsubscriptions? unsubscriptions;
 
   const BookingsData({
     required this.bookings,
     required this.status,
     this.usedFallback = false,
-    this.unsubscriptions = BookingsUnsubscriptions.empty,
+    this.unsubscriptions,
   });
 
   bool get failed => status == BookingsDataRetrievalStatus.fail;

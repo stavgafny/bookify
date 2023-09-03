@@ -1,6 +1,8 @@
 import '../models/booking_model.dart';
+import '../services/bookings_last_cancellation_date.dart';
+import '../services/bookings_local_unsubscriptions.dart';
 
-class BookingListHelper {
+class BookingsListHelper {
   static BookingModel? _getBookingById(List<BookingModel> bookings, int id) {
     final ids = bookings.map((booking) => booking.id).toList();
     final index = ids.indexOf(id);
@@ -29,7 +31,8 @@ class BookingListHelper {
   ///
   /// Returns all new bookings that their price changed from previous
   /// (if booking has no previous, then it is also considered as changed)
-  /// and that also are still below the `priceNotfiier` threshold.
+  /// that are still below the `priceNotfiier` threshold and that aren't
+  /// in local unsubscriptions.
   static List<BookingModel> getPriceAlerts({
     required List<BookingModel> prevBookings,
     required List<BookingModel> newBookings,
@@ -46,5 +49,34 @@ class BookingListHelper {
       }
     }
     return changed;
+  }
+
+  /// Valid bookings are bookings that haven't reached their cancellation
+  /// deadline.
+  ///* Note: ones that reached deadline reminder are valid
+  static List<BookingModel> getValidBookings(List<BookingModel> bookings) {
+    final now = DateTime.now();
+    return bookings.where((booking) {
+      final deadline = BookingsLastCancellationDate.getDeadline(
+        lastDateToCancel: booking.lastDateToCancel,
+        time: now,
+      );
+      return !deadline.duration.isNegative;
+    }).toList();
+  }
+
+  static Future<List<BookingModel>> getSubscribedOnlyBookings(
+    List<BookingModel> bookings,
+  ) async {
+    final unsubscriptions =
+        await BookingsLocalUnsubscriptions.readUnsubscriptions();
+    final subscribedOnlyBookings = <BookingModel>[];
+    for (final booking in bookings) {
+      final isSubscribed = unsubscriptions.getIsIdSubscribed(booking.id);
+      if (isSubscribed) {
+        subscribedOnlyBookings.add(booking);
+      }
+    }
+    return subscribedOnlyBookings;
   }
 }
