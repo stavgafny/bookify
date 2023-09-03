@@ -6,6 +6,8 @@ class LastCancellationDeadline {
   final bool reachedReminderDuration;
 
   const LastCancellationDeadline(this.duration, this.reachedReminderDuration);
+
+  bool get isAfter => duration.isNegative;
 }
 
 class BookingsLastCancellationDate {

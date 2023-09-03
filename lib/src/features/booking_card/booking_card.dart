@@ -98,7 +98,11 @@ class BookingCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SubscriptionButton(id: booking.id, initialSubscription: subscribed),
+        SubscriptionButton(
+          id: booking.id,
+          initialSubscription: subscribed,
+          lastDateToCancel: booking.lastDateToCancel,
+        ),
         LastUpdateDate(lastUpdateDate: booking.lastUpdateDate),
       ],
     );

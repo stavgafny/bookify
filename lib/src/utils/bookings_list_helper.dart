@@ -61,7 +61,7 @@ class BookingsListHelper {
         lastDateToCancel: booking.lastDateToCancel,
         time: now,
       );
-      return !deadline.duration.isNegative;
+      return !deadline.isAfter;
     }).toList();
   }
 
