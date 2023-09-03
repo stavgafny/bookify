@@ -1,6 +1,6 @@
 import '../models/booking_model.dart';
 import '../models/bookings_data.dart';
-import '../services/bookings_lttc.dart';
+import '../services/bookings_last_cancellation_date.dart';
 import '../utils/booking_list_helper.dart';
 import '../utils/logger.dart';
 import '../services/bookings_api_handler.dart';
@@ -54,9 +54,10 @@ class BookingsDataProvider {
   }
 
   static void updateBookingsData({
-    required void Function() onChangedBookings,
-    required void Function(List<BookingModel> bookings) onPriceAlerts,
-    required void Function(List<BookingModel> bookings) lttcAlerts,
+    required void Function() onBookingsChanges,
+    required void Function(List<BookingModel> bookings) priceAlertingBookings,
+    required void Function(List<BookingModel> bookings)
+        cancellationDateRemindingBookings,
   }) async {
     final fetchBookingsData = await _fetchBookingsData();
     if (fetchBookingsData.failed) return;
@@ -73,17 +74,17 @@ class BookingsDataProvider {
 
     if (changedBookings.isNotEmpty) {
       await BookingsStorage.store(newBookings);
-      onChangedBookings();
+      onBookingsChanges();
 
       final priceAlerts = BookingListHelper.getPriceAlerts(
         prevBookings: prevBookings,
         newBookings: changedBookings,
       );
       if (priceAlerts.isNotEmpty) {
-        onPriceAlerts(priceAlerts);
+        priceAlertingBookings(priceAlerts);
       }
     }
-
-    BookingsLTTC.getAlertingLTTCBookings(newBookings).then(lttcAlerts);
+    BookingsLastCancellationDate.getRemindingBookings(newBookings)
+        .then(cancellationDateRemindingBookings);
   }
 }

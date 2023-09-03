@@ -7,6 +7,7 @@ import '../providers/bookings_data_provider.dart';
 import '../utils/date_formatter.dart';
 import '../utils/logger.dart';
 import './bookings_notifications_service.dart';
+import './bookings_last_cancellation_date.dart';
 
 class BookingsBackgroundWorker {
   static final _logger = Logger.debugInstance?.of<BookingsBGWorkerLogger>();
@@ -23,13 +24,13 @@ class BookingsBackgroundWorker {
     _update = callback;
   }
 
-  static void _sendToUI() {
+  static void _sendUpdateToUI() {
     _logger?.log("sending UI changes");
     _sendPort ??= IsolateNameServer.lookupPortByName(_isolatePortName);
     _sendPort?.send(null);
   }
 
-  static void _notifiPriceAlerts(List<BookingModel> bookings) {
+  static void _notifiPriceAlertingBookings(List<BookingModel> bookings) {
     for (final booking in bookings) {
       BookingsNotificationsService.createNotification(
         title: booking.name,
@@ -39,26 +40,29 @@ class BookingsBackgroundWorker {
     _logger?.log("price alert changes on ${bookings.length} bookings");
   }
 
-  static void _notifiLTTCBookings(List<BookingModel> bookings) {
+  static void _notifiCancelDateRemindingBookings(List<BookingModel> bookings) {
     for (final booking in bookings) {
-      final timeLeft = booking.lastDateToCancel.difference(DateTime.now());
-      final timeLeftText = DateFormatter.formatDuration(timeLeft);
+      final deadline = BookingsLastCancellationDate.getDeadline(
+        lastDateToCancel: booking.lastDateToCancel,
+        time: DateTime.now(),
+      );
+      final timeLeftText = DateFormatter.formatDuration(deadline.duration);
       BookingsNotificationsService.createNotification(
         title: booking.name,
         body: "Last cancellation date is near! ($timeLeftText)",
         reminder: true,
       );
     }
-    _logger?.log("LTTC alerts on ${bookings.length} bookings");
+    _logger?.log("cancellation date reminders on ${bookings.length} bookings");
   }
 
   @pragma('vm:entry-point')
   static Future<void> _worker() async {
     _logger?.log("fired scheduled worker");
     BookingsDataProvider.updateBookingsData(
-      onChangedBookings: _sendToUI,
-      onPriceAlerts: _notifiPriceAlerts,
-      lttcAlerts: _notifiLTTCBookings,
+      onBookingsChanges: _sendUpdateToUI,
+      priceAlertingBookings: _notifiPriceAlertingBookings,
+      cancellationDateRemindingBookings: _notifiCancelDateRemindingBookings,
     );
   }
 

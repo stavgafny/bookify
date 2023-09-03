@@ -68,7 +68,7 @@ class BookingCard extends StatelessWidget {
           checkinDate: booking.checkinDate,
           checkoutDate: booking.checkoutDate,
         ),
-        LastDateToCancelText(lttcDate: booking.lastDateToCancel),
+        LastDateToCancelText(lastDateToCancel: booking.lastDateToCancel),
       ],
     );
   }
