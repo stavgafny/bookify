@@ -8,7 +8,7 @@ class BookingsLoadingAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: LoadingAnimationWidget.discreteCircle(
-        color: Colors.amber,
+        color: const Color(0xFF5ABAEB),
         secondRingColor: Colors.green,
         thirdRingColor: Colors.red,
         size: 75.0,

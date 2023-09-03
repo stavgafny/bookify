@@ -63,7 +63,7 @@ class _BookingCardsFeedState extends State<BookingCardsFeed>
     return Scrollbar(
       child: RefreshIndicator(
         onRefresh: _refreshBookings,
-        color: Colors.amber,
+        color: const Color(0xFF96D2F1),
         child: FutureBuilder<BookingsData>(
           future: _bookingsData,
           builder: (context, snapshot) {

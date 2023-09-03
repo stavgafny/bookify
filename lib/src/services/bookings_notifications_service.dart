@@ -8,14 +8,14 @@ class BookingsNotificationsService {
 
   static Future<void> _initializeChannel() async {
     AwesomeNotifications().initialize(
-      'resource://mipmap/ic_launcher',
+      'resource://drawable/res_notification_app_icon',
       [
         NotificationChannel(
           channelGroupKey: _channelGroupKey,
           channelKey: _channelKey,
           channelName: 'Bookings notifications',
           channelDescription: 'Notification channel for Booking changes',
-          defaultColor: Colors.amber,
+          defaultColor: const Color(0xFF96D2F1),
           ledColor: Colors.white,
         ),
       ],
