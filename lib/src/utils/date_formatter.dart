@@ -8,11 +8,12 @@ class DateFormatter {
   }
 
   static String formatDuration(Duration duration, {bool secondary = false}) {
-    final timeFormats = <String>[];
     final days = duration.inDays;
     final hours = duration.inHours % Duration.hoursPerDay;
     final minutes = duration.inMinutes % Duration.minutesPerHour;
     final seconds = duration.inSeconds % Duration.secondsPerMinute;
+
+    final timeFormats = <String>[];
 
     if (days.abs() > 0) timeFormats.add("${days}d");
     if (hours.abs() > 0) timeFormats.add("${hours}h");

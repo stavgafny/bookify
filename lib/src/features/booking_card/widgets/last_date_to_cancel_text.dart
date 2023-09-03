@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../services/bookings_last_cancellation_date.dart';
 import '../../../utils/date_formatter.dart';
+import '../../../utils/time_helper.dart';
 
-class LastDateToCancelText extends StatelessWidget {
+class LastDateToCancelText extends StatefulWidget {
   static const _baseTextStyle = TextStyle(
     fontSize: 11.0,
     fontWeight: FontWeight.w300,
@@ -17,16 +18,23 @@ class LastDateToCancelText extends StatelessWidget {
   });
 
   @override
+  State<LastDateToCancelText> createState() => _LastDateToCancelTextState();
+}
+
+class _LastDateToCancelTextState extends State<LastDateToCancelText> {
+  @override
   Widget build(BuildContext context) {
     final deadline = _getDeadline();
     final color = _getColor(deadline);
+
+    _setNextUpdateTime(deadline.duration);
     return Expanded(
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           decoration: BoxDecoration(
-            color: color.withAlpha(_bgAplha),
+            color: color.withAlpha(LastDateToCancelText._bgAplha),
             borderRadius: BorderRadius.circular(50.0),
           ),
           child: Row(
@@ -42,11 +50,16 @@ class LastDateToCancelText extends StatelessWidget {
     );
   }
 
+  void _setNextUpdateTime(Duration duration) {
+    final time = TimeHelper.getNextUpdate(duration, secondary: true);
+    Future.delayed(time, () => setState(() {}));
+  }
+
   Widget _dateText({required Color color}) {
-    final dateText = DateFormatter.formatDate(lastDateToCancel);
+    final dateText = DateFormatter.formatDate(widget.lastDateToCancel);
     return Text(
       "Cancellation date: $dateText",
-      style: _baseTextStyle.copyWith(color: color),
+      style: LastDateToCancelText._baseTextStyle.copyWith(color: color),
     );
   }
 
@@ -60,7 +73,8 @@ class LastDateToCancelText extends StatelessWidget {
     );
     return Text(
       "($deadlineText)",
-      style: _baseTextStyle.copyWith(fontWeight: FontWeight.w700, color: color),
+      style: LastDateToCancelText._baseTextStyle
+          .copyWith(fontWeight: FontWeight.w700, color: color),
     );
   }
 
@@ -75,7 +89,7 @@ class LastDateToCancelText extends StatelessWidget {
 
   LastCancellationDeadline _getDeadline() {
     return BookingsLastCancellationDate.getDeadline(
-      lastDateToCancel: lastDateToCancel,
+      lastDateToCancel: widget.lastDateToCancel,
       time: DateTime.now(),
     );
   }
