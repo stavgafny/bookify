@@ -46,10 +46,13 @@ class BookingsBackgroundWorker {
         lastDateToCancel: booking.lastDateToCancel,
         time: DateTime.now(),
       );
-      final timeLeftText = DateFormatter.formatDuration(deadline.duration);
+      final timeLeftText = DateFormatter.formatDuration(
+        deadline.duration,
+        secondary: true,
+      );
       BookingsNotificationsService.createNotification(
         title: booking.name,
-        body: "Last cancellation date is near! ($timeLeftText)",
+        body: "Cancellation date is near! ($timeLeftText)",
         reminder: true,
       );
     }

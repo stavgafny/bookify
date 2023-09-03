@@ -1,4 +1,12 @@
 class DateFormatter {
+  static String formatDate(DateTime date, {bool shortenYear = false}) {
+    return [
+      "${date.day}",
+      "${date.month}",
+      shortenYear ? "${date.year}".substring(2) : "${date.year}",
+    ].map((e) => e.padLeft(2, '0')).join("/");
+  }
+
   static String formatDuration(Duration duration, {bool secondary = false}) {
     final timeFormats = <String>[];
     final days = duration.inDays;
@@ -13,31 +21,4 @@ class DateFormatter {
 
     return timeFormats.first + (secondary ? (" ${timeFormats[1]}") : "");
   }
-
-  static String formatDate(DateTime date, {bool shortenYear = false}) {
-    return [
-      "${date.day}",
-      "${date.month}",
-      shortenYear ? "${date.year}".substring(2) : "${date.year}",
-    ].map((e) => e.padLeft(2, '0')).join("/");
-  }
 }
-
-/*
-  static int getApproximateDaysLeft(Duration duration) {
-    return (duration.inHours / Duration.hoursPerDay).round();
-  }
-
-  static int getApproximateHoursLeft(Duration duration) {
-    return (duration.inMinutes / Duration.minutesPerHour).round();
-  }
-
-  static String getFormattedApproximateTimeLeft(Duration duration) {
-    int time = getApproximateDaysLeft(duration);
-    if (time > 0 || (time < 0 && duration.isNegative)) {
-      return "${time}d";
-    }
-    time = getApproximateHoursLeft(duration);
-    return "${time}h";
-  }
-*/
