@@ -11,7 +11,9 @@ class TimeHelper {
     if (minutes.abs() > 0) timeFactors.add(Duration.microsecondsPerMinute);
     timeFactors.add(Duration.microsecondsPerSecond);
 
-    final timeFactor = secondary ? timeFactors[1] : timeFactors.first;
+    final timeFactor = secondary && timeFactors.length > 1
+        ? timeFactors[1]
+        : timeFactors.first;
     return Duration(microseconds: duration.inMicroseconds % timeFactor);
   }
 }

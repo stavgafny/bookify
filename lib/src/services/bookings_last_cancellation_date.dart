@@ -63,7 +63,7 @@ class BookingsLastCancellationDate {
 }
 
 class _BookingsReminderTimeStampHandler {
-  static const String _storeKey = '\$background-worker-time-stamp';
+  static const String _storeKey = '\$bookings-reminder-time-stamp';
   static SharedPreferences? _prefs;
 
   static Future<void> _ensureEstablishAndRefresh() async {

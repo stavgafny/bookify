@@ -8,10 +8,13 @@ class DateFormatter {
   }
 
   static String formatDuration(Duration duration, {bool secondary = false}) {
-    final days = duration.inDays;
-    final hours = duration.inHours % Duration.hoursPerDay;
-    final minutes = duration.inMinutes % Duration.minutesPerHour;
-    final seconds = duration.inSeconds % Duration.secondsPerMinute;
+    final charge = duration.isNegative ? -1 : 1;
+    duration = duration.abs();
+
+    final days = duration.inDays * charge;
+    final hours = duration.inHours % Duration.hoursPerDay * charge;
+    final minutes = duration.inMinutes % Duration.minutesPerHour * charge;
+    final seconds = duration.inSeconds % Duration.secondsPerMinute * charge;
 
     final timeFormats = <String>[];
 
@@ -20,6 +23,7 @@ class DateFormatter {
     if (minutes.abs() > 0) timeFormats.add("${minutes}m");
     timeFormats.add("${seconds}s");
 
-    return timeFormats.first + (secondary ? (" ${timeFormats[1]}") : "");
+    return timeFormats.first +
+        (secondary && timeFormats.length > 1 ? (" ${timeFormats[1]}") : "");
   }
 }

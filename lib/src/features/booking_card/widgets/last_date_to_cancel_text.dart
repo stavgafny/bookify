@@ -52,7 +52,11 @@ class _LastDateToCancelTextState extends State<LastDateToCancelText> {
 
   void _setNextUpdateTime(Duration duration) {
     final time = TimeHelper.getNextUpdate(duration, secondary: true);
-    Future.delayed(time, () => setState(() {}));
+    Future.delayed(time, () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   Widget _dateText({required Color color}) {
