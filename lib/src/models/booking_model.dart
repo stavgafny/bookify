@@ -23,6 +23,8 @@ class BookingModel {
     required this.lastUpdateDate,
   });
 
+  bool get isPriceNotifying => (lastPrice ?? double.maxFinite) < priceNotifier;
+
   BookingModel copyWith({
     int? id,
     String? name,

@@ -39,11 +39,9 @@ class BookingsListHelper {
   }) {
     final changed = <BookingModel>[];
     for (final newBooking in newBookings) {
-      if (newBooking.lastPrice != null &&
-          newBooking.lastPrice! < newBooking.priceNotifier) {
+      if (newBooking.isPriceNotifying) {
         final prevBooking = _getBookingById(prevBookings, newBooking.id);
-        if ((prevBooking == null) ||
-            (prevBooking.lastPrice != newBooking.lastPrice)) {
+        if (prevBooking?.lastPrice != newBooking.lastPrice) {
           changed.add(newBooking);
         }
       }
@@ -52,7 +50,7 @@ class BookingsListHelper {
   }
 
   /// Valid bookings are bookings that haven't reached their cancellation
-  /// deadline.
+  /// deadline and that also have a non-nullable price below price notifier
   ///* Note: ones that reached deadline reminder are valid
   static List<BookingModel> getValidBookings(List<BookingModel> bookings) {
     final now = DateTime.now();
@@ -61,7 +59,7 @@ class BookingsListHelper {
         lastDateToCancel: booking.lastDateToCancel,
         time: now,
       );
-      return !deadline.isAfter;
+      return !deadline.isAfter && booking.isPriceNotifying;
     }).toList();
   }
 
