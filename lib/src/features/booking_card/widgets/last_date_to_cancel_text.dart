@@ -84,9 +84,9 @@ class _LastDateToCancelTextState extends State<LastDateToCancelText> {
 
   Color _getColor(LastCancellationDeadline deadline) {
     final isNegative = deadline.duration.isNegative;
-    Color color = Colors.white;
+    Color color = const Color(0xFF96D2F1);
     if (deadline.reachedReminderDuration || isNegative) {
-      color = isNegative ? Colors.black : Colors.amber;
+      color = isNegative ? Colors.black : Colors.yellow;
     }
     return color;
   }
