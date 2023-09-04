@@ -12,6 +12,6 @@ void main() async {
   runApp(const MainApp());
 
   await BookingsBackgroundWorker.instantiateWorker(
-    duration: const Duration(seconds: 10),
+    duration: const Duration(minutes: 20),
   );
 }

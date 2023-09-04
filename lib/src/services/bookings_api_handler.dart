@@ -7,8 +7,8 @@ class BookingsApiHandler {
   static final _logger = Logger.debugInstance?.of<BookingsApiLogger>();
 
   static final _url = Uri.http(
-    // 'booking-bot.bounceme.net',
-    '192.168.68.103:8077',
+    'booking-bot.bounceme.net',
+    // '192.168.68.103:8077',
     'api/hotel-listeners',
   );
   static const _headers = {"Content-Type": "application/json"};
